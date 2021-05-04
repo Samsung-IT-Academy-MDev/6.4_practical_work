@@ -36,7 +36,7 @@ public class PhoneBookContoller {
 		      Statement stmt = connection.createStatement();
 		      ResultSet rs = stmt.executeQuery("SELECT * FROM phonebook");
 		      while (rs.next()) {
-		        ls.add(new PhonebookEntry(rs.getString("name"), rs.getString("phone")));
+		        ls.add(new PhonebookEntry(rs.getLong("id"),rs.getString("name"), rs.getString("phone")));
 		      }
 		    } catch (Exception e) {
 		    }
@@ -58,9 +58,8 @@ public class PhoneBookContoller {
 	@RequestMapping(method = RequestMethod.DELETE, value = "/delete")
 	public Boolean delete(@RequestBody PhonebookEntry pb) {
 		try (Connection connection = dataSource.getConnection()) {
-		      PreparedStatement stmt = connection.prepareStatement("delete from phonebook where name=? and phone=?");
-		      stmt.setString(1, pb.name);
-		      stmt.setString(2, pb.phone);
+		      PreparedStatement stmt = connection.prepareStatement("delete from phonebook where id=?");
+		      stmt.setLong(1, pb.id);
 		      int num = stmt.executeUpdate();
 				return num > 0;
 		    } catch (Exception e) { }
@@ -70,9 +69,10 @@ public class PhoneBookContoller {
 	@RequestMapping(method = RequestMethod.POST, value = "/update")
 	public Boolean update(@RequestBody PhonebookEntry pb) {
 		try (Connection connection = dataSource.getConnection()) {
-		      PreparedStatement stmt = connection.prepareStatement("UPDATE phonebook SET phone = ? WHERE name=?;");
-		      stmt.setString(1, pb.phone);
-		      stmt.setString(2, pb.name);
+		      PreparedStatement stmt = connection.prepareStatement("UPDATE phonebook SET name = ?,phone = ? WHERE name=? where id=?");
+		      stmt.setString(1, pb.name);
+		      stmt.setString(2, pb.phone);
+		      stmt.setLong(2, pb.id);
 		      int num = stmt.executeUpdate();
 				return num > 0;
 		    } catch (Exception e) { }
