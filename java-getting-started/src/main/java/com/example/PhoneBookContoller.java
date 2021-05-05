@@ -46,11 +46,11 @@ public class PhoneBookContoller {
 	@RequestMapping(method = RequestMethod.PUT, value = "/create")
 	public Boolean create(@RequestBody PhonebookEntry pb) {
 		try (Connection connection = dataSource.getConnection()) {
-		      PreparedStatement stmt = connection.prepareStatement("insert into phonebook (name,phone) values(?,?)");
+		      PreparedStatement stmt = connection.prepareStatement("insert into phonebook (name,phone) values( ? , ? )");
 		      stmt.setString(1, pb.name);
 		      stmt.setString(2, pb.phone);
 		      int num = stmt.executeUpdate();
-				return num > 0;
+			return num > 0;
 		    } catch (Exception e) { }
 		return false;
 	}
@@ -69,10 +69,10 @@ public class PhoneBookContoller {
 	@RequestMapping(method = RequestMethod.POST, value = "/update")
 	public Boolean update(@RequestBody PhonebookEntry pb) {
 		try (Connection connection = dataSource.getConnection()) {
-		      PreparedStatement stmt = connection.prepareStatement("UPDATE phonebook SET name = ?,phone = ? WHERE name=? where id=?");
+		      PreparedStatement stmt = connection.prepareStatement("UPDATE phonebook SET name = ?,phone = ? WHERE id=?");
 		      stmt.setString(1, pb.name);
 		      stmt.setString(2, pb.phone);
-		      stmt.setLong(2, pb.id);
+		      stmt.setLong(3, pb.id);
 		      int num = stmt.executeUpdate();
 				return num > 0;
 		    } catch (Exception e) { }
